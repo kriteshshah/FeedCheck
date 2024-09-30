@@ -1,0 +1,31 @@
+{% extends "users/base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1 class="display-4">Welcome to Upload doc section!!</h1>
+  <hr class="my-4">
+  <p><i>Upload your documents here to be read its content!!</i></p>
+</div>
+<!-- enctype="multipart/form-data" -->
+<div class="content-section" >
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                {{form.as_p}}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit" value="file">Upload</button>
+            </div>
+        </form>
+</div>
+{% if data %}
+
+<div class="content-section">
+
+    <h2>Text in image</h2>
+    <p>{{data}}</p>
+   
+
+</div>
+
+{% endif %}
+{% endblock content %}

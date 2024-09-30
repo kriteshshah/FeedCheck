@@ -1,0 +1,33 @@
+{% extends "users/base.html" %}
+{% block content %}
+
+      <div class="topbar"> 
+          <img src="/static/images/topbar.PNG" class="imgtopbar"> 
+      </div>
+<!--       <div style="padding: 10px 10px;text-align: center;"><a href="{% url 'post-create'%}"
+               class="btn btn-success" type="submit">Create New Post</a>
+      </div> -->
+{% for post in posts %}
+<article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ post.author.profile.profile_image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <strong>{{ post.author }}</strong>
+              
+            </div>
+            <p class="article-content">
+              <img src="{{ post.image.url}}" style="width: 100%;">
+              <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+            </p>
+            
+            
+            <h2>{{ post.title }}</h2>
+            <p class="article-content">{{ post.likecount }}  <i class="fa fa-heart fa-lg" style="color: red;" aria-hidden="true"></i></p>
+             <a class="btn btn-success btn-sm mt-1 mb-1" 
+              href="{% url 'post-detail' post.id %}">Checkout <span class="badge badge-light">Now !</span></a>
+          </div>
+</article>
+
+
+{% endfor %}
+{% endblock content %}

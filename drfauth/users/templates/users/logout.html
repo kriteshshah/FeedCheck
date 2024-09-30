@@ -1,0 +1,29 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <h2>You have been logged out</h2>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a class="btn btn-primary btn-sm mt-1 mb-1" 
+                    href="{% url 'login' %}">Log In Again <span class="badge badge-light"> Now !</span></a>
+        </small>
+    </br></br>
+        <p>
+        	Redirecting to Home page in <span id="count" style="color: darkblue;">6</span> seconds!!</br>
+        	<progress value="0" max="5" id="progressBar"></progress>
+        </p>
+    </div>
+
+ <script>
+
+var timeleft = 5;
+var downloadTimer = setInterval(function(){
+  if(timeleft <= 0){
+    window.location.href = "{% url 'socio-home' %}";
+  }
+  document.getElementById("progressBar").value = 5 - timeleft;
+  document.getElementById("count").innerHTML = timeleft;
+  timeleft -= 1;
+}, 1000);
+</script>
+
+{% endblock content %}
