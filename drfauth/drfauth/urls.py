@@ -5,13 +5,12 @@ from django.contrib.auth import views as auth_view
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_view.LoginView.as_view(template_name='users/login.html'
                                                , extra_context={'title': 'Welcome - Login to socio'}), name='login'),
-    path('password-reset/',
-         auth_view.PasswordResetView.as_view(template_name='users/password_reset.html'),
-         name='password_reset'),
+
 
     path('password-reset-done/',
          auth_view.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'),

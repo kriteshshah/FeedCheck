@@ -8,7 +8,7 @@ from .views import (
     # PostDetailView,
     PostCreateView,
     PostUpdateView,
-    PostDeleteView, CustomLogout
+    PostDeleteView, CustomLogout, CustomPasswordUpdate
 )
 from django.contrib.auth import views as auth_views
 
@@ -34,4 +34,5 @@ urlpatterns = [
     path(r'(?P<id>\d+)/saved/$', views.favorite, name='socio-favorite'),
     path('bookmark/', views.favorite_list, name='socio-bookmark'),
     path('docx/', views.document, name='socio-docx'),
+    path('password-reset/',CustomPasswordUpdate.as_view(), name='password_reset'),
 ]

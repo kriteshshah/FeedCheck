@@ -1,12 +1,13 @@
 from django.contrib.auth import logout
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
 
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, CommentForm, checkimage
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, CommentForm, checkimage, \
+    CustomPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from .models import Post, Comment, checkmk
@@ -302,4 +303,19 @@ class CustomLogout(View):
     def get(self, request):
         logout(request)
         return HttpResponseRedirect(reverse('login'))
+
+
+class CustomPasswordUpdate(LoginRequiredMixin, PasswordChangeView):
+    form_class = CustomPasswordChangeForm
+    template_name = 'users/password_reset_confirm.html'
+    success_url = reverse_lazy('login')
+
+    def get_success_url(self):
+        return super().get_success_url()
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "Password has been updated successfully.")
+        return super().form_valid(form)
+
 
