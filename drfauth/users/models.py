@@ -40,19 +40,20 @@ class Post(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_image = models.ImageField(default="default.png", upload_to="profile_pics")
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='profiles_user')
+    profile_image = models.ImageField(upload_to="profile_pics", null=True, blank=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        img = Image.open(self.profile_image.path)
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.profile_image.path)
+        if self.profile_image:
+            img = Image.open(self.profile_image.path)
+            if img.height > 300 or img.width > 300:
+                output_size = (300, 300)
+                img.thumbnail(output_size)
+                img.save(self.profile_image.path)
 
 
 class Comment(models.Model):
@@ -79,3 +80,22 @@ class checkmk(models.Model):
 
     def road(self):
         return self.d_image.path
+
+class FriendRequest(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_requests', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='received_requests', on_delete=models.CASCADE)
+    is_accepted = models.BooleanField(default=False)
+    sender_request = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.sender} -> {self.receiver}'
+
+    class Meta:
+        db_table = "friend_request"
+
+
+class UserChat(models.Model):
+    sender = models.ForeignKey(User, related_name='sender_chats', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='receiver_chats', on_delete=models.CASCADE)
+    message = models.TextField()
+    created_ts = models.DateTimeField(auto_now_add=True)

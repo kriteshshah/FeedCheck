@@ -1,0 +1,82 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Chat Header -->
+    <div class="chat-header bg-primary text-white p-3 rounded-top d-flex align-items-center">
+        {% for profile in receiver.profiles_user.all %}
+            {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}"
+                     alt="Profile Pic"
+                     class="rounded-circle mr-3"
+                     width="50"
+                     height="50"
+                     title="{{ receiver.first_name }} {{ receiver.last_name }}">
+            {% else %}
+                <img src="{% static 'images/sociologo.png' %}"
+                     alt="Default Profile Pic"
+                     class="rounded-circle mr-3"
+                     width="50"
+                     height="50"
+                     title="{{ receiver.first_name }} {{ receiver.last_name }}">
+            {% endif %}
+        {% endfor %}
+        <h5 class="mb-0">{{ receiver.username }}</h5>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-box border rounded-bottom p-3"
+         id="chatBox"
+         style="height: 400px; overflow-y: auto; background-color: #f8f9fa; display: flex; flex-direction: column-reverse;">
+        {% for chat in chats %}
+        <div class="chat-message mb-3 {% if chat.sender == user %}text-right{% endif %}">
+            <div class="d-flex {% if chat.sender == user %}justify-content-end{% else %}justify-content-start{% endif %} align-items-start">
+
+                {% if chat.sender != user %}
+                    {% for profile in chat.sender.profiles_user.all %}
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}"
+                                 alt="Profile Pic"
+                                 class="rounded-circle mr-2"
+                                 width="40"
+                                 height="40"
+                                 title="{{ chat.sender.first_name }} {{ chat.sender.last_name }}">
+                        {% else %}
+                            <img src="{% static 'images/sociologo.png' %}"
+                                 alt="Default Profile Pic"
+                                 class="rounded-circle mr-2"
+                                 width="40"
+                                 height="40"
+                                 title="{{ chat.sender.first_name }} {{ chat.sender.last_name }}">
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div style="max-width: 70%;">
+                    <div class="chat-bubble {% if chat.sender == user %}bg-light text-black{% else %}bg-light text-dark{% endif %} p-3 rounded">
+                        <p class="mb-0">{{ chat.message }}</p>
+                    </div>
+                    <small class="text-muted d-block mt-1">{{ chat.created_ts|date:"M d, Y H:i" }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Message Input -->
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Send</button>
+    </form>
+</div>
+
+<script>
+    // Scroll chat box to the bottom when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        var chatBox = document.getElementById("chatBox");
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+</script>
+{% endblock %}

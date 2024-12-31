@@ -8,7 +8,7 @@ from .views import (
     # PostDetailView,
     PostCreateView,
     PostUpdateView,
-    PostDeleteView, CustomLogout, CustomPasswordUpdate
+    PostDeleteView, CustomLogout, FriendRequestActionView, FriendRequestCreateView, ChatView, UserListView
 )
 from django.contrib.auth import views as auth_views
 
@@ -34,5 +34,12 @@ urlpatterns = [
     path(r'(?P<id>\d+)/saved/$', views.favorite, name='socio-favorite'),
     path('bookmark/', views.favorite_list, name='socio-bookmark'),
     path('docx/', views.document, name='socio-docx'),
-    path('password-reset/',CustomPasswordUpdate.as_view(), name='password_reset'),
+    path('friend-requests/', FriendRequestCreateView.as_view(), name='friend-requests'),
+    path('accept-friend-request/<int:request_id>/', FriendRequestActionView.as_view(), name='accept-friend-request'),
+    path('decline-friend-request/<int:request_id>/', FriendRequestActionView.as_view(), name='decline-friend-request'),
+    path('following/<int:user_id>/', views.FollowingListView.as_view(), name='following-list'),
+    path('followers/<int:user_id>/', views.FollowersListView.as_view(), name='followers-list'),
+    path('friends/<int:user_id>/', views.FriendRequestListView.as_view(), name='friends-list'),
+    path('chat/', UserListView.as_view(), name='user-list'),
+    path('chat/<int:user_id>/', ChatView.as_view(), name='chat-view'),
 ]

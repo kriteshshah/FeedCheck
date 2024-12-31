@@ -7,15 +7,50 @@
   <p><i>Its time to rock</i></p>
 </div>
     <div class="content-section">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset class="form-group" >
-                <legend class="border-bottom mb-4">Socio Post</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Post</button>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Socio Post</legend>
+            {{ form|crispy }}
+
+            <!-- Image Preview Section -->
+            <div id="image-preview" class="form-group" style="display: none;">
+                <img id="preview-img" src="#" alt="Selected Image" style="max-width: 100%; height: auto;"/>
+                <button type="button" class="btn btn-danger mt-2" id="remove-image">Remove Image</button>
             </div>
-        </form>
-    </div>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Post</button>
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imageInput = document.querySelector('input[type="file"]');  // Adjust the selector if needed
+        const previewContainer = document.getElementById('image-preview');
+        const previewImage = document.getElementById('preview-img');
+        const removeButton = document.getElementById('remove-image');
+
+        // Show image preview when a file is selected
+        imageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove selected image and reset input
+        removeButton.addEventListener('click', function () {
+            imageInput.value = "";  // Clear the file input
+            previewImage.src = "#";  // Reset the preview image
+            previewContainer.style.display = "none";  // Hide the preview container
+        });
+    });
+</script>
+
 {% endblock content %}

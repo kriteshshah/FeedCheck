@@ -1,5 +1,6 @@
 {% extends "users/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
 
  <div class="content-section">
@@ -20,10 +21,29 @@
     {% if forloop.first %}<div class="row">{% endif %}
       <div class="col-sm-6">
       <article class="media content-section row">
-            <img class="rounded-circle article-img" src="{{  obj.author.profile.profile_image.url }}">
+              {% for profile in obj.author.profiles_user.all %}
+                {% if profile.profile_image %}
+                  <img src="{{ profile.profile_image.url }}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% else %}
+                  <img src="{% static 'images/sociologo.png' %}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% endif %}
+             {% endfor %}
             <div class="media-body">
               <div class="article-metadata">
                 <a class="mr-2" href="#">{{ obj.author }}
+                 {% if obj.author != user %}
+
+                        {% if obj.author.id in friend_requests %}
+                            <span class="text-success">✔️ Request Sent</span>
+                        {% elif user
+                        {% else %}
+                            <form method="POST" action="{% url 'friend-requests' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="receiver_id" value="{{ obj.author.id }}">
+                                <button type="submit" class="btn btn-primary btn-sm">+ Friend</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
                 </a>
                 <small class="text-muted">{{ obj.date_posted|date:"F d, Y" }}</small>
               </div>

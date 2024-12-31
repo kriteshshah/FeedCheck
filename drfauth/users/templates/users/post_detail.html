@@ -1,16 +1,38 @@
 
 {% extends "users/base.html" %}
+{% load static %}
+
 {% block content %}
 <div>
   <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'socio-feed'%}">Back to Neewsfeed</a>
 </div>
-      
+
         <article class="media content-section row">
-          <img class="rounded-circle article-img" src="{{ object.author.profile.profile_image.url }}">
+           {% for profile in object.author.profiles_user.all %}
+                {% if profile.profile_image %}
+                  <img src="{{ profile.profile_image.url }}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% else %}
+                  <img src="{% static 'images/sociologo.png' %}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% endif %}
+             {% endfor %}
           <div class="media-body">
 
             <div class="article-metadata">
-              <strong><p>{{ object.author }}</p></strong>
+              <strong><p>{{ object.author }}
+                 {% if object.author != user %}
+                    {{ friend_requests }}
+                    {{ object.author.id }}
+                     {% if object.author.id in friend_requests %}
+                        <span class="text-success">✔️ Request Sent</span>
+                    {% else %}
+                        <form method="POST" action="{% url 'friend-requests' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="receiver_id" value="{{ object.author.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm">+ Friend</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                </p></strong>
               {% if object.author == user %}
                 <div>
                   <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
@@ -31,23 +53,23 @@
             <p class="article-content">{{ object.caption }}</p>
             <p class="article-content">{{ total_likes }}  <i class="fa fa-heart fa-lg" style="color: red;" aria-hidden="true"></i>{% if is_favorite %}  &nbsp;&nbsp;saved &nbsp;&nbsp;<a href="{% url 'socio-favorite' id=object.id %}"><i class="fa fa-bookmark fa-2x" style="color: green;" aria-hidden="true"></i></a>{%else%}  &nbsp;&nbsp;Bookmark &nbsp;&nbsp;<a href="{% url 'socio-favorite' id=object.id %}"><i class="fa fa-bookmark-o fa-2x" style="color: green;" aria-hidden="true"></i></a>{% endif %}
             </p>
-             
-            
+
+
             <div>
               <form method="POST" action="{% url 'socio-like' %}">
                   {% csrf_token%}
                 {% if is_liked %}
-                <button  type="submit" name="post_id" value="{{object.id}}" 
+                <button  type="submit" name="post_id" value="{{object.id}}"
                 class="btn btn-danger">DisLike</button>
                 {% else %}
-                <button  type="submit" name="post_id" value="{{object.id}}" 
+                <button  type="submit" name="post_id" value="{{object.id}}"
                 class="btn btn-primary">like</button>
                 {% endif %}
-              </form>  
+              </form>
 
-              
+
             </div>
-            
+
 
         </article>
 
@@ -55,8 +77,8 @@
   {% csrf_token %}
     {{comment_form.as_p}}
     <input type="submit" name="comment" class="btn btn-warning">
-  
-</form>    
+
+</form>
 
 <div class="main-comment-section">
   {{comments.count}} Comment{{comments|pluralize}}
@@ -77,7 +99,7 @@
             <a href="{% url 'socio-comment' comment.id %}" style="color: #585858;"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
             {% endif %}
         {% endif %}
-        </cite> 
+        </cite>
     </footer>
   </blockquote>
 {% endfor %}

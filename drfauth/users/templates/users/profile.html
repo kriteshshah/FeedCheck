@@ -1,26 +1,54 @@
 {% extends "users/base.html" %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags static %}  <!-- Add static tag loading here -->
 {% block content %}
 <div class="content-section">
-      <div class="media">
-        <img class="rounded-circle imgg"  src="{{ user.profile.profile_image.url }}">
+    <div class="media">
+        {% if profile %}
+            <img class="rounded-circle imgg" src="{{ profile.url }}" alt="Profile Image">
+        {% else %}
+            <img class="rounded-circle imgg" src="{% static 'images/default.jpg' %}" alt="Profile Image">
+        {% endif %}
         <div class="media-body">
-          <h2 class="imgh">{{ user.username }}</h2>
-          <p class="text-secondary">{{ user.email }}</p>
+            <h2 class="imgh">{{ user.username }}</h2>
+            <p class="text-secondary">{{ user.email }}</p>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <strong>Friends:</strong>
+                    <a href="{% url 'friends-list' user.id %}">{{ friends_count }}</a>
+                </li>
+                <li class="list-inline-item">
+                    <strong>Following:</strong>
+                    <a href="{% url 'following-list' user.id %}">{{ following_count }}</a>
+                </li>
+                <li class="list-inline-item">
+                    <strong>Followers:</strong>
+                    <a href="{% url 'followers-list' user.id %}">{{ followers_count }}</a>
+                </li>
+            </ul>
         </div>
-      </div>
-      <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Profile info</legend>
-                {{ uform|crispy }}
-                {{ pform|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Update</button>
-            </div>
-        </form>
     </div>
+    <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Profile Info</legend>
+            {{ uform|crispy }}  <!-- Keep the crispy form display for user fields -->
+            <div class="form-group">
+                <label for="profile_image">Profile Image</label>
+                {{ pform.profile_image }}
+                {{ pform.profile_image.errors }}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Update</button>
+        </div>
+</form>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
 {% endblock %}
-
-

@@ -1,4 +1,5 @@
 {% extends "users/base.html" %}
+{% load static %}
 {% block content %}
  <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'socio-feed'  %}">Back to News Feed!</a>
 <div class="jumbotron">
@@ -23,10 +24,29 @@
  {% if forloop.first %}<div class="row">{% endif %}
   <div class="col-sm-6">
     <article class="media content-section row">
-              <img class="rounded-circle article-img" src="{{ post.author.profile.profile_image.url }}">
+             {% for profile in post.author.profiles_user.all %}
+                {% if profile.profile_image %}
+                  <img src="{{ profile.profile_image.url }}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% else %}
+                  <img src="{% static 'images/sociologo.png' %}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% endif %}
+             {% endfor %}
               <div class="media-body ">
                 <div class="article-metadata">
-                  <strong class="mr-2" href="{% url 'socio-profile'%}">{{ post.author }}</strong>
+                  <strong class="mr-2" href="{% url 'socio-profile'%}">{{ post.author }}
+                     {% if post.author != user %}
+
+                            {% if post.author.id in friend_requests %}
+                                <span class="text-success">✔️ Request Sent</span>
+                            {% else %}
+                                <form method="POST" action="{% url 'friend-requests' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="receiver_id" value="{{ post.author.id }}">
+                                    <button type="submit" class="btn btn-primary btn-sm">+ Friend</button>
+                                </form>
+                            {% endif %}
+                     {% endif %}
+                  </strong>
                   <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
                   <img src="{{ post.image.url}}" class="imgpost" style="width: 100%;height: auto;">
                 <h4>{{ post.title }}</h4>

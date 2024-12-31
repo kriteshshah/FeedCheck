@@ -24,7 +24,7 @@ SECRET_KEY = 'kt$3ed6xwzou+ac@1kib9+%&a$mlvyt^(ub^ddnz=ob3z_z8*h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.middleware.AutoLogoutMiddleware',
 ]
 
 ROOT_URLCONF = 'drfauth.urls'
@@ -78,12 +79,12 @@ WSGI_APPLICATION = 'drfauth.wsgi.application'
 
 DATABASES = {
     'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'postgres',
-       'USER': 'postgres',
-       'PASSWORD': 'Test105*',
-       'HOST': 'localhost',
-       'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres_sisco',
+        'USER': 'postgres',
+        'PASSWORD': 'Test105*',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -117,6 +118,11 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Set session timeout to 6 min (360 seconds)
+SESSION_COOKIE_AGE = 360  # 6 hour in seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Expire session when the browser is closed
+SESSION_SAVE_EVERY_REQUEST = True  # Reset the session timeout on every request
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

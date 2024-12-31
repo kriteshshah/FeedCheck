@@ -1,4 +1,5 @@
 {% extends "users/base.html" %}
+{% load static %}
 {% block content %}
 
       <div class="topbar"> 
@@ -9,10 +10,32 @@
       </div> -->
 {% for post in posts %}
 <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ post.author.profile.profile_image.url }}">
+          {% for profile in post.author.profiles_user.all %}
+                {% if profile.profile_image %}
+                  <img src="{{ profile.profile_image.url }}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% else %}
+                  <img src="{% static 'images/sociologo.png' %}" width="29" height="27" class="rounded-circle" alt="display logo">
+                {% endif %}
+             {% endfor %}
           <div class="media-body">
             <div class="article-metadata">
-              <strong>{{ post.author }}</strong>
+             <strong><p>{{ post.author }}
+                 {% if post.author != user %}
+                    {{ accepted_data}}
+                     {% if post.author.id in accepted_data %}
+
+                        <span class="text-success">following</span>
+                     {% elif post.author.id in friend_requests %}
+                        <span class="text-success">✔️ Request Sent</span>
+                    {% else %}
+                        <form method="POST" action="{% url 'friend-requests' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="receiver_id" value="{{ post.author.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm">+ Friend</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                </p></strong>
               
             </div>
             <p class="article-content">

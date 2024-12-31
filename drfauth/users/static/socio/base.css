@@ -112,3 +112,117 @@ a.article-title:hover {
 #myBtn:hover {
   background-color: #555;
 }
+
+.chat-box {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.chat-message {
+    margin-bottom: 15px;
+}
+
+.chat-message img {
+    border-radius: 50%;
+}
+ /* Chat Header Styling */
+.chat-header {
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+}
+
+.chat-header img {
+    border: 2px solid white;
+    margin-right: 10px;
+}
+
+.chat-header h5 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Chat Box Styling */
+.chat-box {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 0 0 10px 10px;
+}
+
+.chat-message {
+    margin-bottom: 15px;
+}
+
+.chat-bubble {
+    max-width: 60%;
+    word-wrap: break-word;
+    line-height: 1.4;
+    position: relative;
+}
+
+.chat-bubble.bg-primary {
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px 10px 0 10px;
+}
+
+.chat-bubble.bg-light {
+    background-color: #f1f1f1;
+    color: #333;
+    border-radius: 10px 10px 10px 0;
+}
+
+.chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+}
+
+.chat-box::-webkit-scrollbar-track {
+    background-color: #e9ecef;
+}
+
+/* No Chats Alert Styling */
+.alert-info {
+    border-radius: 10px;
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 10px;
+    font-weight: bold;
+}
+
+/* Submit Button Styling */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+
+
+.bg-info {
+    background-color: #17a2b8 !important; /* Adjust the blue tone */
+    color: #fff !important;
+}
+
+.list-group-item:hover {
+    background-color: #138496; /* Darker shade on hover */
+    color: #fff;
+}

@@ -1,0 +1,100 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center">
+    {% if list_type == 'following' %}
+      People You Follow
+    {% elif list_type == 'followers' %}
+      Your Followers
+    {% endif %}
+  </h2>
+
+  <hr>
+
+  {% if friends %}
+    <ul class="list-group">
+      {% for friend_request in friends %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {% if list_type == 'following' %}
+            <!-- Display Receiver (Person You Follow) -->
+            <div>
+              {% if friend_requests %}
+                  <img class="rounded-circle" width="30" height="30" src="{{ friend_requests.url }}" alt="Profile Image">
+              {% else %}
+                  <img class="rounded-circle" width="30" height="30" src="{% static 'images/default.jpg' %}" alt="Profile Image">
+              {% endif %}
+              {{ friend_request.sender.username }}
+            </div>
+          {% elif list_type == 'followers' %}
+            <!-- Display Sender (Person Following You) -->
+            <div>
+              {% if friend_requests %}
+                  <img class="rounded-circle" width="30" height="30" src="{{ friend_requests.url }}" alt="Profile Image">
+              {% else %}
+                  <img class="rounded-circle" width="30" height="30" src="{% static 'images/default.jpg' %}" alt="Profile Image">
+              {% endif %}
+                {{ friend_request.sender.username }}
+            </div>
+            {% elif list_type == 'friends' %}
+            <!-- Display Sender (Person Following You) -->
+            <div>
+              {% if friend_requests %}
+                  <img class="rounded-circle" width="30" height="30" src="{{ friend_requests.url }}" alt="Profile Image">
+              {% else %}
+                  <img class="rounded-circle" width="30" height="30" src="{% static 'images/default.jpg' %}" alt="Profile Image">
+              {% endif %}
+                {{ friend_request.sender.username }}
+            </div>
+          {% endif %}
+
+          <!-- Optional Action Buttons -->
+          <div>
+            {% if list_type == 'following' %}
+              <form method="POST" action="{% url 'decline-friend-request' friend_request.receiver.id %}">
+                {% csrf_token %}
+                 <input type="hidden" name="action" value="decline">
+               <button type="submit" class="btn btn-danger btn-sm">Unfollow</button>
+              </form>
+              {% elif list_type == 'followers' %}
+                {% if not friend_request.id in friend_requests %}
+                  <form method="POST" action="{% url 'accept-friend-request' friend_request.receiver.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="accept">
+                   <button type="submit" class="btn btn-success btn-sm">Follow</button>
+                  </form>
+                {% endif %}
+
+              {% elif list_type == 'friends' %}
+              <form method="POST" action="{% url 'accept-friend-request' friend_request.receiver.id %}">
+                {% csrf_token %}
+                 <input type="hidden" name="action" value="decline">
+               <button type="submit" class="btn btn-danger btn-sm">Unfollow</button>
+                <input type="hidden" name="action" value="accept">
+               <button type="submit" class="btn btn-success btn-sm">Follow</button>
+              </form>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <!-- Empty State -->
+    <div class="alert alert-info text-center mt-3">
+      {% if list_type == 'following' %}
+        You are not following anyone yet.
+      {% elif list_type == 'followers' %}
+        You don't have any followers yet.
+      {% elif list_type == 'friends' %}
+        You don't have any request from friends yet.
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- Back to Profile Button -->
+  <div class="text-center mt-4">
+    <a href="{% url 'socio-profile' %}" class="btn btn-secondary">Back to Profile</a>
+  </div>
+</div>
+{% endblock %}

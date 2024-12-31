@@ -1,0 +1,30 @@
+{% extends "users/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h3>Users</h3>
+    <ul class="list-group">
+        {% for user in users %}
+        <li class="list-group-item d-flex align-items-center {% if user.has_new_messages %}bg-info text-white{% endif %}">
+            {% for profile in user.profiles_user.all %}
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="Profile Pic"
+                         class="rounded-circle mr-3" width="40" height="40">
+                {% else %}
+                    <img src="{% static 'images/sociologo.png' %}" alt="Profile Pic"
+                         class="rounded-circle mr-3" width="40" height="40">
+                {% endif %}
+            {% endfor %}
+            <a href="{% url 'chat-view' user.id %}" class="text-decoration-none">
+                <strong>{{ user.username }}</strong>
+                {% if user.has_new_messages %}
+                <span class="badge badge-danger">New</span>
+                {% endif %}
+            </a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No users available to chat.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
